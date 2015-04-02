@@ -44,7 +44,7 @@ public class GameEngine implements KeyListener, GameReporter{
 	}
 	
 	private void generateEnemy(){
-		Enemy e = new Enemy((int)(Math.random()*390), 30);
+		Enemy e = new Enemy((int)(Math.random()*350), 30);
 		gp.sprites.add(e);
 		enemies.add(e);
 	}
@@ -90,6 +90,12 @@ public class GameEngine implements KeyListener, GameReporter{
 			break;
 		case KeyEvent.VK_RIGHT:
 			v.move(1);
+			break;
+		case KeyEvent.VK_UP:
+			v.move_u(-1);
+			break;
+		case KeyEvent.VK_DOWN:
+			v.move_u(1);
 			break;
 		case KeyEvent.VK_D:
 			difficulty += 0.1;
