@@ -14,14 +14,15 @@ import javax.swing.Timer;
 public class GameEngine implements KeyListener, GameReporter{
 	GamePanel gp;
 		
-	private ArrayList<Enemy> enemies = new ArrayList<Enemy>();	
+	private ArrayList<Enemy> enemies = new ArrayList<Enemy>();
+	private ArrayList<NewEnemy> newenemies = new ArrayList<NewEnemy>();
 	private SpaceShip v;	
 	
 	private Timer timer;
 	
 	private long score = 0;
 	private long hp = 5000;
-	private double difficulty = 0.1;
+	private double difficulty = 0.3;
 	
 	public GameEngine(GamePanel gp, SpaceShip v) {
 		this.gp = gp;
@@ -34,6 +35,7 @@ public class GameEngine implements KeyListener, GameReporter{
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				process();
+				processNew();
 			}
 		});
 		timer.setRepeats(true);
@@ -59,6 +61,7 @@ public class GameEngine implements KeyListener, GameReporter{
 		while(e_iter.hasNext()){
 			Enemy e = e_iter.next();
 			e.proceed();
+
 			
 			if(!e.isAlive()){
 				e_iter.remove();
@@ -66,6 +69,7 @@ public class GameEngine implements KeyListener, GameReporter{
 				score += 5000;
 			}
 		}
+		
 		
 		gp.updateGameUI(this);
 		
@@ -82,6 +86,45 @@ public class GameEngine implements KeyListener, GameReporter{
 		}
 		
 		gp.updateGameUI(this);
+	}
+
+		private void generateNewEnemy(){
+		NewEnemy ne = new NewEnemy((int)(Math.random()*350), 30);
+		gp.sprites.add(ne);
+		newenemies.add(ne);
+	}
+		
+		private void processNew(){
+		if(Math.random() < difficulty){
+			generateNewEnemy();
+		}
+		
+		Iterator<NewEnemy> e_iter_New = newenemies.iterator();
+		while(e_iter_New.hasNext()){
+			NewEnemy ne = e_iter_New.next();
+			ne.proceed();
+
+			
+			if(!ne.isAlive()){
+				e_iter_New.remove();
+				gp.sprites.remove(ne);
+				score += 5000;
+			}
+		}
+		
+		gp.updateGameUI(this);
+		
+		Rectangle2D.Double vrnew = v.getRectangle();
+		Rectangle2D.Double ernew;
+		for(NewEnemy ne : newenemies){
+			ernew = ne.getRectangle();
+			if(ernew.intersects(vrnew)){
+				hp -= 100;
+				if(hp==0)
+					die();
+				return;
+			}
+		}
 	}
 	
 	public void die(){
