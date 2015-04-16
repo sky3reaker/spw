@@ -33,7 +33,19 @@ public class GamePanel extends JPanel {
 		repaint();
 	}
 	
-	
+	public void boxhp(int down){
+		big.setColor(Color.WHITE);
+		big.fillRect(20, 60, 20, 472);
+		
+		big.setColor(Color.black);
+		big.fillRect(21, 64, 18, 464);
+		
+		big.setColor(Color.blue);
+		big.fillRect(21, 64, 18, (down*8)+64);
+		
+		
+		
+	}
 
 	@Override
 	public void paint(Graphics g) {

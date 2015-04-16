@@ -4,6 +4,6 @@ public interface GameReporter {
 
 	long getScore();
 	
-	long getHp();
+	int getHp();
 
 }
