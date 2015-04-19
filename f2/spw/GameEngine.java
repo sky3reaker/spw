@@ -21,8 +21,9 @@ public class GameEngine implements KeyListener, GameReporter{
 	private Timer timer;
 	
 	private long score = 0;
-	private int hp = 50;
-	private double difficulty = 0.3;
+	private int hp = 100;
+	private int count = 0;
+	private double difficulty = 0.05;
 	
 	public GameEngine(GamePanel gp, SpaceShip v) {
 		this.gp = gp;
@@ -72,7 +73,7 @@ public class GameEngine implements KeyListener, GameReporter{
 		
 		
 		gp.updateGameUI(this);
-		gp.boxhp(hp);
+		gp.boxhp(hp,count);
 		
 		Rectangle2D.Double vr = v.getRectangle();
 		Rectangle2D.Double er;
@@ -80,6 +81,7 @@ public class GameEngine implements KeyListener, GameReporter{
 			er = e.getRectangle();
 			if(er.intersects(vr)){
 				hp -= 10;
+				count++;
 				if(hp == 0)
 					die();
 				return;
@@ -87,7 +89,7 @@ public class GameEngine implements KeyListener, GameReporter{
 		}
 		
 		gp.updateGameUI(this);
-		gp.boxhp(hp);
+		gp.boxhp(hp,count);
 	}
 
 		private void generateNewEnemy(){
@@ -115,7 +117,7 @@ public class GameEngine implements KeyListener, GameReporter{
 		}
 		
 		gp.updateGameUI(this);
-		gp.boxhp(hp);
+		gp.boxhp(hp,count);
 		
 		Rectangle2D.Double vrnew = v.getRectangle();
 		Rectangle2D.Double ernew;
@@ -123,17 +125,20 @@ public class GameEngine implements KeyListener, GameReporter{
 			ernew = ne.getRectangle();
 			if(ernew.intersects(vrnew)){
 				hp -= 10;
+				count++;
 				if(hp == 0)
 					die();
 				return;
 			}
 		}
 		gp.updateGameUI(this);
-		gp.boxhp(hp);
+		gp.boxhp(hp,count);
+		
 	}
 	
 	public void die(){
-		gp.boxhp(hp);
+		gp.updateGameUI(this);
+		gp.boxhp(hp,count);
 		timer.stop();
 	}
 	

@@ -33,15 +33,15 @@ public class GamePanel extends JPanel {
 		repaint();
 	}
 	
-	public void boxhp(int down){
+	public void boxhp(int down, int count){
 		big.setColor(Color.WHITE);
-		big.fillRect(20, 60, 20, 472);
+		big.fillRect(20, 76, 20, 208);
 		
 		big.setColor(Color.black);
-		big.fillRect(21, 64, 18, 464);
+		big.fillRect(21, 80, 18, 200);
 		
 		big.setColor(Color.blue);
-		big.fillRect(21, 64, 18, (down*8)+64);
+		big.fillRect(21, down+((-20)+(30*count)),18, 200-(20*count));
 		
 		
 		
