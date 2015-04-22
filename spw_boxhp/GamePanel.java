@@ -5,13 +5,12 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
-import java.awt.Toolkit;
-import java.awt.Image;
 
 import javax.swing.JPanel;
 
 public class GamePanel extends JPanel {
-	private BufferedImage bi;
+	
+	private BufferedImage bi;	
 	Graphics2D big;
 	ArrayList<Sprite> sprites = new ArrayList<Sprite>();
 
@@ -25,11 +24,8 @@ public class GamePanel extends JPanel {
 		big.clearRect(0, 0, 400, 600);
 		
 		big.setColor(Color.WHITE);		
-		big.drawString(String.format("%08d", reporter.getScore()), 300, 30);
-		big.drawString(String.format("HP = %08d", reporter.getHp()), 150, 30);
-		big.drawString(String.format("= %d", reporter.getLife()), 65, 30);
-		Image img = Toolkit.getDefaultToolkit().getImage("heart.png");
-		big.drawImage(img, 20, 15,30, 30, null);
+		big.drawString(String.format("%08d", reporter.getScore()), 300, 20);
+		big.drawString(String.format("HP = %08d", reporter.getHp()), 150, 20);
 		for(Sprite s : sprites){
 			s.draw(big);
 		}
@@ -37,21 +33,15 @@ public class GamePanel extends JPanel {
 		repaint();
 	}
 	
-	/*public void heart(){
-		Image img = Toolkit.getDefaultToolkit().getImage("heart.png");
-		big.drawImage(img, 20, 20, this);
-		
-	}*/
-	
-	public void boxhp(int down, int count){
+	public void boxhp(int down){
 		big.setColor(Color.WHITE);
-		big.fillRect(20, 76, 20, 208);
+		big.fillRect(20, 60, 20, 460);
 		
 		big.setColor(Color.black);
-		big.fillRect(21, 80, 18, 200);
+		big.fillRect(21, 64, 18, 452);
 		
 		big.setColor(Color.blue);
-		big.fillRect(21, down+((-20)+(30*count)),18, 200-(20*count));
+		big.fillRect(21, 64, 18, down);
 		
 		
 		

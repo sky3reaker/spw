@@ -8,7 +8,6 @@ import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-
 import javax.swing.Timer;
 
 
@@ -22,10 +21,8 @@ public class GameEngine implements KeyListener, GameReporter{
 	private Timer timer;
 	
 	private long score = 0;
-	private int hp = 100;
-	private int count = 0;
-	private double difficulty = 0.05;
-	private int life = 1;
+	private long hp = 5000;
+	private double difficulty = 0.3;
 	
 	public GameEngine(GamePanel gp, SpaceShip v) {
 		this.gp = gp;
@@ -69,33 +66,26 @@ public class GameEngine implements KeyListener, GameReporter{
 			if(!e.isAlive()){
 				e_iter.remove();
 				gp.sprites.remove(e);
-				score += 500;
+				score += 5000;
 			}
 		}
 		
 		
 		gp.updateGameUI(this);
-		gp.boxhp(hp,count);
 		
 		Rectangle2D.Double vr = v.getRectangle();
 		Rectangle2D.Double er;
 		for(Enemy e : enemies){
 			er = e.getRectangle();
 			if(er.intersects(vr)){
-				hp -= 10;
-				count++;
-				if(hp == 0){
-					if(life == 0){
-						die();}
-						life -= 1;
-						reSethp();
-				}
+				hp -= 100;
+				if(hp==0)
+					die();
 				return;
 			}
 		}
 		
 		gp.updateGameUI(this);
-		gp.boxhp(hp,count);
 	}
 
 		private void generateNewEnemy(){
@@ -123,34 +113,22 @@ public class GameEngine implements KeyListener, GameReporter{
 		}
 		
 		gp.updateGameUI(this);
-		gp.boxhp(hp,count);
 		
 		Rectangle2D.Double vrnew = v.getRectangle();
 		Rectangle2D.Double ernew;
 		for(NewEnemy ne : newenemies){
 			ernew = ne.getRectangle();
 			if(ernew.intersects(vrnew)){
-				hp -= 10;
-				count++;
-				if(hp == 0){
-					if(life == 0){
-						die();}
-						life -= 1;
-						reSethp();
-				}
+				hp -= 100;
+				if(hp==0)
+					die();
 				return;
 			}
 		}
-		gp.updateGameUI(this);
-		gp.boxhp(hp,count);
-		
 	}
 	
 	public void die(){
-		gp.updateGameUI(this);
-		gp.boxhp(hp,count);
 		timer.stop();
-		MyForm();
 	}
 	
 	void controlVehicle(KeyEvent e) {
@@ -172,34 +150,12 @@ public class GameEngine implements KeyListener, GameReporter{
 			break;
 		}
 	}
-	public void MyForm(){
-		setSize(150,150);
-		setLocation(350,350);
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		getContentPane().setLayout(null);
-		
-		public void actionPerformed(ActionEvent e){
-			int n = JOptionPane("Game Over\n Your score = %d",score);
-			
-		}
-	
-	
-	}
-	
-	public void reSethp(){
-		hp = 100;
-		count = 0;
-		
-	}
 
 	public long getScore(){
 		return score;
 	}
-	public int getHp(){
+	public long getHp(){
 		return hp;
-	}
-	public int getLife(){
-		return life;
 	}
 	
 	@Override
