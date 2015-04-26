@@ -43,4 +43,8 @@ public class NewEnemy extends Sprite{
     public boolean isAlive(){
         return alive;
     }
+	
+	public void checkAlive(){
+		alive = false;
+	}
 }

@@ -3,16 +3,18 @@ package f2.spw;
 import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.Toolkit;
+import java.awt.Image;
 
-public class Enemy extends Sprite{
+public class Item extends Sprite{
 	public static final int Y_TO_FADE = 400;
 	public static final int Y_TO_DIE = 600;
 	
 	private int step = 12;
 	private boolean alive = true;
 	
-	public Enemy(int x, int y) {
-		super(x, y, 5, 10);
+	public Item(int x, int y) {
+		super(x, y, 5, 5);
 		
 	}
 
@@ -24,8 +26,9 @@ public class Enemy extends Sprite{
 			g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 
 					(float)(Y_TO_DIE - y)/(Y_TO_DIE - Y_TO_FADE)));
 		}
-		g.setColor(Color.BLUE);
-		g.fillRect(x, y, width, height);
+		
+		Image img = Toolkit.getDefaultToolkit().getImage("eeee.png");
+		g.drawImage(img, x, y, 30, 30, null);
 		
 	}
 
@@ -38,5 +41,9 @@ public class Enemy extends Sprite{
 	
 	public boolean isAlive(){
 		return alive;
+	}
+	
+	public void checkAlive(){
+		alive = false;
 	}
 }

@@ -17,6 +17,7 @@ public class GameEngine implements KeyListener, GameReporter{
 		
 	private ArrayList<Enemy> enemies = new ArrayList<Enemy>();
 	private ArrayList<NewEnemy> newenemies = new ArrayList<NewEnemy>();
+	private ArrayList<Item> item = new ArrayList<Item>();
 	private SpaceShip v;	
 	
 	private Timer timer;
@@ -25,6 +26,7 @@ public class GameEngine implements KeyListener, GameReporter{
 	private int hp = 100;
 	private int count = 0;
 	private double difficulty = 0.05;
+	private double chance = 0.01;
 	private int life = 1;
 	
 	public GameEngine(GamePanel gp, SpaceShip v) {
@@ -39,6 +41,7 @@ public class GameEngine implements KeyListener, GameReporter{
 			public void actionPerformed(ActionEvent arg0) {
 				process();
 				processNew();
+				processItem();
 			}
 		});
 		timer.setRepeats(true);
@@ -48,6 +51,48 @@ public class GameEngine implements KeyListener, GameReporter{
 	public void start(){
 		timer.start();
 	}
+	
+	private void generateItem(){
+		Item tem = new Item((int)(Math.random()*350), 30);
+		gp.sprites.add(tem);
+		item.add(tem);
+	}
+
+	private void processItem(){
+		if(Math.random() < chance){
+			generateItem();
+		}
+		
+		Iterator<Item> e_iter_item = item.iterator();
+		while(e_iter_item.hasNext()){
+			Item tem = e_iter_item.next();
+			tem.proceed();
+
+			
+			if(!tem.isAlive()){
+				e_iter_item.remove();
+				gp.sprites.remove(tem);
+				
+			}
+		}
+		
+		gp.updateGameUI(this);
+		gp.boxhp(hp,count);
+		
+		Rectangle2D.Double vr_item = v.getRectangle();
+		Rectangle2D.Double er_item;
+		for(Item tem : item){
+			er_item = tem.getRectangle();
+			if(er_item.intersects(vr_item)){
+				refillHp();
+				tem.checkAlive();
+			}
+			return;
+		}
+		gp.updateGameUI(this);
+		gp.boxhp(hp,count);
+	}
+		
 	
 	private void generateEnemy(){
 		Enemy e = new Enemy((int)(Math.random()*350), 30);
@@ -89,6 +134,7 @@ public class GameEngine implements KeyListener, GameReporter{
 						die();}
 						life -= 1;
 						reSethp();
+						e.checkAlive();
 				}
 				return;
 			}
@@ -137,6 +183,7 @@ public class GameEngine implements KeyListener, GameReporter{
 						die();}
 						life -= 1;
 						reSethp();
+						ne.checkAlive();
 				}
 				return;
 			}
@@ -150,7 +197,7 @@ public class GameEngine implements KeyListener, GameReporter{
 		gp.updateGameUI(this);
 		gp.boxhp(hp,count);
 		timer.stop();
-		MyForm();
+		//MyForm();
 	}
 	
 	void controlVehicle(KeyEvent e) {
@@ -172,26 +219,25 @@ public class GameEngine implements KeyListener, GameReporter{
 			break;
 		}
 	}
-	public void MyForm(){
-		setSize(150,150);
-		setLocation(350,350);
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		getContentPane().setLayout(null);
-		
-		public void actionPerformed(ActionEvent e){
-			int n = JOptionPane("Game Over\n Your score = %d",score);
-			
-		}
-	
-	
-	}
 	
 	public void reSethp(){
 		hp = 100;
 		count = 0;
 		
 	}
-
+	
+	public void refillHp(){
+		if(hp >= 70 || count >= 3){
+			reSethp();
+		}
+		else{
+		hp += 30;
+		count -= 3;
+		}
+	}
+	
+	
+	
 	public long getScore(){
 		return score;
 	}
