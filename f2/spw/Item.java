@@ -14,18 +14,12 @@ public class Item extends Sprite{
 	private boolean alive = true;
 	
 	public Item(int x, int y) {
-		super(x, y, 5, 5);
+		super(x, y, 30, 30);
 		
 	}
 
 	@Override
 	public void draw(Graphics2D g) {
-		if(y < Y_TO_FADE)
-			g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
-		else{
-			g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 
-					(float)(Y_TO_DIE - y)/(Y_TO_DIE - Y_TO_FADE)));
-		}
 		
 		Image img = Toolkit.getDefaultToolkit().getImage("eeee.png");
 		g.drawImage(img, x, y, 30, 30, null);

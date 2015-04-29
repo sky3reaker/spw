@@ -19,7 +19,7 @@ public class SpaceShip extends Sprite{
 		//g.setColor(Color.WHITE);
 		//g.fillRect(x, y, width, height);
 		Image img = Toolkit.getDefaultToolkit().getImage("spaceship1.jpg");
-		g.drawImage(img, x, y, 50, 50, null);
+		g.drawImage(img, x, y, width, height, null);
 		
 	}
 

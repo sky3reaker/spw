@@ -14,23 +14,16 @@ public class Enemy extends Sprite{
 	private boolean alive = true;
 	
 	public Enemy(int x, int y) {
-		super(x, y, 5, 5);
+		super(x, y, 20, 20);
 		
 	}
 
 	@Override
 	public void draw(Graphics2D g) {
-		if(y < Y_TO_FADE)
-			g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
-		else{
-			g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 
-					(float)(Y_TO_DIE - y)/(Y_TO_DIE - Y_TO_FADE)));
-		}
 		/*g.setColor(Color.BLUE);
 		g.fillRect(x, y, width, height);*/
 		Image img = Toolkit.getDefaultToolkit().getImage("enemy.png");
-		g.drawImage(img, x, y, width*5, height*5, null);
-		
+		g.drawImage(img, x, y, 20, 20, null);
 	}
 
 	public void proceed(){
