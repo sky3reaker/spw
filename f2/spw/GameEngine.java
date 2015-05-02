@@ -7,7 +7,7 @@ import java.awt.event.KeyListener;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.Iterator;
-
+import java.awt.event.WindowEvent;
 
 import javax.swing.Timer;
 
@@ -27,9 +27,10 @@ public class GameEngine implements KeyListener, GameReporter{
 	private int hp = 100;
 	private int count = 0;
 	private double difficulty = 0.3;
-	private double chance = 0.001;
+	private double chance = 0.01;
 	private	double genNewEnemy = 0.3;
 	private int life = 1;
+	private boolean G_over=false;
 	
 	public GameEngine(GamePanel gp, SpaceShip v) {
 		this.gp = gp;
@@ -166,6 +167,7 @@ public class GameEngine implements KeyListener, GameReporter{
 		
 		for(NewEnemy ne : newenemies){
 			ernew = ne.getRectangle();
+			vrnew = v.getRectangle();
 			for(Bullet b : bullet){
 				br = b.getRectangle();
 				if(br.intersects(ernew)){
@@ -174,25 +176,27 @@ public class GameEngine implements KeyListener, GameReporter{
 					b.checkAlive();
 					ne.checkAlive();
 				}
-			if(ernew.intersects(vrnew)){
-				hp -= 10;
-				count++;
-				ne.checkAlive();
-				if(hp == 0){
-					if(life == 0){
-						die();
-					}
+		   }
+		   if(ernew.intersects(vrnew)){
+				  hp -= 10;
+				  count++;
+				  ne.checkAlive();
+				    if(hp == 0){
+						if(life == 0){
+							die();
+						}
 					life -= 1;
 					reSethp();
-				}
+				    }
 				return;
-			}}
+			    }
 		}
 		
 		//-----------------Enemy--------------------/
 		
 		for(Enemy e : enemies){
 			er = e.getRectangle();
+			vrnew = v.getRectangle();
 			for(Bullet b : bullet){
 				br = b.getRectangle();
 				if(br.intersects(er)){
@@ -201,18 +205,20 @@ public class GameEngine implements KeyListener, GameReporter{
 					b.checkAlive();
 					e.checkAlive();
 				}
-				if(er.intersects(vrnew)){
-				hp -= 10;
-				count++;
-				e.checkAlive();
-				if(hp == 0){
-					if(life == 0){
-						die();}
+		    }
+		    if(er.intersects(vrnew)){
+				 	 hp -= 10;
+				  	count++;
+					e.checkAlive();
+					if(hp == 0){
+						if(life == 0){
+							die();
+						}
 						life -= 1;
 						reSethp();
-				}
+					}
 				return;
-			}}
+			    }
 		}
 		
 		gp.updateGameUI(this);
@@ -223,6 +229,10 @@ public class GameEngine implements KeyListener, GameReporter{
 	public void die(){
 		gp.updateGameUI(this);
 		gp.boxhp(hp,count);
+		life = 1;
+		reSethp();
+		G_over = true;
+		gp.gameOver(this);
 		timer.stop();
 		//MyForm();
 	}
@@ -247,15 +257,40 @@ public class GameEngine implements KeyListener, GameReporter{
 		case KeyEvent.VK_SPACE:
 			generateBullet();
 			break;
+		case KeyEvent.VK_ENTER:
+			if(G_over){
+				playAg();
+			}
+
+			break;
+		case KeyEvent.VK_ESCAPE:
+			if(G_over){
+				Main.frame.dispatchEvent(new WindowEvent(Main.frame, WindowEvent.WINDOW_CLOSING));
+			}
+
+			break;
+			
 		}
 	}
 	
 	public void reSethp(){
 		hp = 100;
 		count = 0;
+
 		
 	}
 	
+	public void playAg(){
+		life = 1;
+		G_over = false;
+		score = 0;
+		v.setPosition();
+		gp.updateGameUI(this);
+		gp.boxhp(hp,count);
+		timer.start();
+		
+	}
+
 	public void refillHp(){
 		if(hp >= 70 || count >= 3){
 			reSethp();

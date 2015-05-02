@@ -23,6 +23,11 @@ public class SpaceShip extends Sprite{
 		
 	}
 
+	public void setPosition(){
+		x = 180;
+		y = 550;
+	}
+
 	public void move(int direction){
 		x += (step * direction);
 		if(x < 0)
