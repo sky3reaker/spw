@@ -19,6 +19,7 @@ public class GameEngine implements KeyListener, GameReporter{
 	private ArrayList<NewEnemy> newenemies = new ArrayList<NewEnemy>();
 	private ArrayList<Item> item = new ArrayList<Item>();
 	private ArrayList<Bullet> bullet = new ArrayList<Bullet>();
+	private ArrayList<ClearItem> citem = new ArrayList<ClearItem>();
 	private SpaceShip v;	
 	
 	private Timer timer;
@@ -26,10 +27,15 @@ public class GameEngine implements KeyListener, GameReporter{
 	private long score = 0;
 	private int hp = 100;
 	private int count = 0;
-	private double difficulty = 0.3;
-	private double chance = 0.01;
-	private	double genNewEnemy = 0.3;
+	private double difficulty = 0.2;
+	private double chance = 0.03;
+	private double genc = 0.03;
+	private	double genNewEnemy = 0.2;
 	private int life = 1;
+	private int type_item = 0;
+	private boolean have_item = false;
+
+	int type = 0;
 	private boolean G_over=false;
 	
 	public GameEngine(GamePanel gp, SpaceShip v) {
@@ -74,7 +80,13 @@ public class GameEngine implements KeyListener, GameReporter{
 		Item tem = new Item((int)(Math.random()*350), 30);
 		gp.sprites.add(tem);
 		item.add(tem);
-		
+	}
+
+
+	private void genCitem(){
+		ClearItem ci = new ClearItem((int)(Math.random()*350), 30);
+		gp.sprites.add(ci);
+		citem.add(ci);
 	}
 	
 	//----------------bullet-----------------------/
@@ -108,6 +120,9 @@ public class GameEngine implements KeyListener, GameReporter{
 	//----------------newEnemy-----------------------/
 		if(Math.random() < genNewEnemy)
 			generateNewEnemy();
+	//----------------newitem---------------------/
+		if(Math.random() < genc)
+			genCitem();
 		
 		
 		Iterator<Enemy> e_iter = enemies.iterator();
@@ -117,7 +132,7 @@ public class GameEngine implements KeyListener, GameReporter{
 			if(!e.isAlive()){
 				e_iter.remove();
 				gp.sprites.remove(e);
-				score += 500;
+				//score += 500;
 			}
 		}	
 	//----------------newEnemy-----------------------/
@@ -129,7 +144,7 @@ public class GameEngine implements KeyListener, GameReporter{
 			if(!ne.isAlive()){
 				e_iter_New.remove();
 				gp.sprites.remove(ne);
-				score += 5000;
+				//score += 500;
 			}
 		}
 	//----------------item-----------------------/
@@ -143,26 +158,62 @@ public class GameEngine implements KeyListener, GameReporter{
 				gp.sprites.remove(tem);
 			}
 		}
+	//-----------------newitem-------------///
+		Iterator<ClearItem> e_iter_citem = citem.iterator();
+		while(e_iter_citem.hasNext()){
+			ClearItem ci = e_iter_citem.next();
+			ci.proceed();
+			if(!ci.isAlive()){
+				e_iter_citem.remove();
+				gp.sprites.remove(ci);
+			}
+		}
+
 	
 		gp.updateGameUI(this);
 		gp.boxhp(hp,count);
+		gp.btmItem(type);
 		
 		Rectangle2D.Double vrnew = v.getRectangle();
 		Rectangle2D.Double ernew;
 		Rectangle2D.Double er;
 		Rectangle2D.Double er_item;
+		Rectangle2D.Double er_citem;
 		Rectangle2D.Double br;
 		
 		//----------------item-----------------------/
 		for(Item tem : item){
 			er_item = tem.getRectangle();
 			if(er_item.intersects(vrnew)){
-				refillHp();
+
+				if(!have_item){
+					type=1;
+					have_item = true;
+				}else{
+					refillHp();
+				}
+				
+				
 				tem.checkAlive();
 				return;
 			}
 		}
-		
+		//----------------clear_item-----------------------/
+		for(ClearItem c : citem){
+			er_citem = c.getRectangle();
+			if(er_citem.intersects(vrnew)){
+				score += 10000;
+				if(!have_item){
+					type=2;
+					have_item = true;
+				}else{
+					clearen();
+				}
+				
+				c.checkAlive();
+				return;
+			}
+		}
 		//----------------newEnemy-----------------------/
 		
 		for(NewEnemy ne : newenemies){
@@ -171,7 +222,7 @@ public class GameEngine implements KeyListener, GameReporter{
 			for(Bullet b : bullet){
 				br = b.getRectangle();
 				if(br.intersects(ernew)){
-					score += 50;
+					score += 100;
 					gp.sprites.remove(b);
 					b.checkAlive();
 					ne.checkAlive();
@@ -180,6 +231,7 @@ public class GameEngine implements KeyListener, GameReporter{
 		   if(ernew.intersects(vrnew)){
 				  hp -= 10;
 				  count++;
+				  score += 500;
 				  ne.checkAlive();
 				    if(hp == 0){
 						if(life == 0){
@@ -200,7 +252,7 @@ public class GameEngine implements KeyListener, GameReporter{
 			for(Bullet b : bullet){
 				br = b.getRectangle();
 				if(br.intersects(er)){
-					score += 50;
+					score += 100;
 					gp.sprites.remove(b);
 					b.checkAlive();
 					e.checkAlive();
@@ -209,6 +261,7 @@ public class GameEngine implements KeyListener, GameReporter{
 		    if(er.intersects(vrnew)){
 				 	 hp -= 10;
 				  	count++;
+				  	score += 500;
 					e.checkAlive();
 					if(hp == 0){
 						if(life == 0){
@@ -223,6 +276,7 @@ public class GameEngine implements KeyListener, GameReporter{
 		
 		gp.updateGameUI(this);
 		gp.boxhp(hp,count);
+		gp.btmItem(type);
 		
 	}
 	
@@ -257,6 +311,18 @@ public class GameEngine implements KeyListener, GameReporter{
 		case KeyEvent.VK_SPACE:
 			generateBullet();
 			break;
+		case KeyEvent.VK_Q:
+			if(have_item){
+				if(type==1){
+					refillHp();
+				}else if(type==2){
+					clearen();
+				}
+				type=0;
+				have_item=false;
+			}
+
+			break;
 		case KeyEvent.VK_ENTER:
 			if(G_over){
 				playAg();
@@ -284,6 +350,9 @@ public class GameEngine implements KeyListener, GameReporter{
 		life = 1;
 		G_over = false;
 		score = 0;
+		type = 0;
+		have_item = false;
+		clearen();
 		v.setPosition();
 		gp.updateGameUI(this);
 		gp.boxhp(hp,count);
@@ -292,16 +361,30 @@ public class GameEngine implements KeyListener, GameReporter{
 	}
 
 	public void refillHp(){
-		if(hp >= 70 || count >= 3){
+		//if(hp >= 70 || count >= 3){
 			reSethp();
-		}
-		else{
+		//}
+		/*else{
 			hp += 30;
 			count -= 3;
-		}
+		}*/
 	}
 	
-	
+	public void clearen(){
+		for(NewEnemy ne : newenemies){
+			ne.checkAlive();
+		}
+		for(Enemy e : enemies){
+			e.checkAlive();
+		}
+		for(ClearItem c : citem){
+			c.checkAlive();
+		}
+		for(Item tem : item){
+			tem.checkAlive();
+		}
+
+	}
 	
 	public long getScore(){
 		return score;

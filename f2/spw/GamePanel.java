@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.awt.Toolkit;
 import java.awt.Image;
 import java.awt.Font;
+import java.awt.Toolkit;
+import java.awt.Image;
 
 import javax.swing.JPanel;
 
@@ -70,6 +72,24 @@ public class GamePanel extends JPanel {
 		
 		
 		
+	}
+
+	public void btmItem(int type){
+		big.setColor(Color.WHITE);
+		big.fillRect( 330, 50, 40, 40);
+
+		big.setColor(Color.black);
+		big.fillRect( 331, 54, 37, 34);
+
+		if(type==1){
+		Image img = Toolkit.getDefaultToolkit().getImage("eeee.png");
+		big.drawImage(img, 331, 54, 37, 34, null);
+
+		}else if(type==2){
+		Image img = Toolkit.getDefaultToolkit().getImage("warning.png");
+		big.drawImage(img, 331, 54, 37, 34, null);
+
+		}
 	}
 
 	@Override
